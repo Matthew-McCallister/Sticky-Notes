@@ -62,6 +62,7 @@ const StickyNote: React.FC<StickyNoteProps> = ({
         left: position.x,
         top: position.y,
         backgroundColor: color,
+        color: (color === 'red' || color === 'blue') ? 'white' : 'black', // <-- Add this line
         minWidth: 200,
         minHeight: 150,
         borderRadius: 8,
@@ -70,10 +71,9 @@ const StickyNote: React.FC<StickyNoteProps> = ({
       }}
     >
       <div
-        className="cursor-move bg-blue-300 px-2 py-1 rounded-t"
+        className="cursor-move bg-blue-300 px-2 py-5 rounded-t"
         onMouseDown={handleMouseDown}
       >
-        Drag Me
       </div>
 
       <textarea

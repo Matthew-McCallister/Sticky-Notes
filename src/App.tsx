@@ -23,12 +23,19 @@ function App() {
         ];
   });
 
-  // Add mode state for light/dark mode
-  const [darkMode, setDarkMode] = useState(false);
+  // Persisted dark mode state
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem('darkMode');
+    return saved ? JSON.parse(saved) : false;
+  });
 
   useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(notes));
   }, [notes]);
+
+  useEffect(() => {
+    localStorage.setItem('darkMode', JSON.stringify(darkMode));
+  }, [darkMode]);
 
   const addNote = () => {
     const newNote: Note = {
@@ -40,7 +47,6 @@ function App() {
     setNotes([...notes, newNote]);
   };
 
-  // Toggle function
   const toggleMode = () => setDarkMode((prev) => !prev);
 
   return (
