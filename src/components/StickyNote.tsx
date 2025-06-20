@@ -70,7 +70,7 @@ const StickyNote: React.FC<StickyNoteProps> = ({
       }}
     >
       <div
-        className="cursor-move bg-gray-300 px-2 py-1 rounded-t"
+        className="cursor-move bg-blue-300 px-2 py-1 rounded-t"
         onMouseDown={handleMouseDown}
       >
         Drag Me
@@ -86,7 +86,6 @@ const StickyNote: React.FC<StickyNoteProps> = ({
         <button
           className="text-white-600 hover:text-black-800"
           onClick={onToggleColor}
-          type="button"
         >
           Toggle Color
         </button>
