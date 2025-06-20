@@ -1,22 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type StickyNoteProps = {
   text: string;
+  position: { x: number; y: number };
   onChange: (newText: string) => void;
   onDelete: () => void;
+  onDrag: (position: { x: number; y: number }) => void;
 };
 
-const StickyNote: React.FC<StickyNoteProps> = ({ text, onChange, onDelete }) => {
-  // New: State to store position
-  const [position, setPosition] = useState({ x: 100, y: 100 });
-
-  // New: Track dragging
+const StickyNote: React.FC<StickyNoteProps> = ({ text, position, onChange, onDelete, onDrag }) => {
   const [isDragging, setIsDragging] = useState(false);
-  const [offset, setOffset] = useState({ x: 0, y: 0 }); // offset between mouse and corner of note
+  const [offset, setOffset] = useState({ x: 0, y: 0 });
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
-    // Calculate offset between mouse and top-left of note
     const rect = (e.target as HTMLDivElement).getBoundingClientRect();
     setOffset({
       x: e.clientX - rect.left,
@@ -27,10 +24,9 @@ const StickyNote: React.FC<StickyNoteProps> = ({ text, onChange, onDelete }) => 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (isDragging) {
-        setPosition({
-          x: e.clientX - offset.x,
-          y: e.clientY - offset.y,
-        });
+        const newX = e.clientX - offset.x;
+        const newY = e.clientY - offset.y;
+        onDrag({ x: newX, y: newY });
       }
     };
 
@@ -38,26 +34,27 @@ const StickyNote: React.FC<StickyNoteProps> = ({ text, onChange, onDelete }) => 
       setIsDragging(false);
     };
 
-    // Attach global listeners while dragging
-    document.addEventListener('mousemove', handleMouseMove);
-    document.addEventListener('mouseup', handleMouseUp);
+    if (isDragging) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+    }
+
     return () => {
       document.removeEventListener('mousemove', handleMouseMove);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isDragging, offset]);
+  }, [isDragging, offset, onDrag]);
 
   return (
     <div
       className="bg-yellow-200 rounded p-4 shadow-md w-64 min-h-32 absolute"
       style={{ left: position.x, top: position.y }}
     >
-      {/* Drag handle: only this part is draggable */}
       <div
         className="cursor-move bg-yellow-300 px-2 py-1 rounded-t"
         onMouseDown={handleMouseDown}
       >
-        Drag Me!
+        Drag Me
       </div>
 
       <textarea
