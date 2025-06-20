@@ -6,6 +6,7 @@ type Note = {
   id: string; // unique identifier for each note
   text: string; // the text content of the note
   position: { x: number; y: number }; // position on the screen (pixels)
+  color: string; // color of the note
 };
 
 function App() {
@@ -15,12 +16,13 @@ function App() {
   const [notes, setNotes] = useState<Note[]>(() => {
     const saved = localStorage.getItem('notes');
     return saved
-      ? JSON.parse(saved) // Parse saved JSON string back into JS object
+      ? JSON.parse(saved)
       : [
           {
             id: '1',
             text: 'Hello, Sticky Note!',
-            position: { x: 100, y: 100 }, // Default position (100px right, 100px down)
+            position: { x: 100, y: 100 },
+            color: 'yellow', // Default color
           },
         ];
   });
@@ -33,14 +35,12 @@ function App() {
 
   // Function to add a new note when user clicks the button
   const addNote = () => {
-    // Create a new Note object with unique id and default values
     const newNote: Note = {
-      id: crypto.randomUUID(), // generates a unique string ID (browser API)
-      text: '', // start with empty text
-      position: { x: 150, y: 150 }, // default position for new notes
+      id: crypto.randomUUID(),
+      text: '',
+      position: { x: 150, y: 150 },
+      color: 'yellow', // Default color
     };
-
-    // Update state by adding the new note to the existing array
     setNotes([...notes, newNote]);
   };
 
@@ -56,31 +56,40 @@ function App() {
 
       {/* Render all notes using map */}
       {notes.map((note) => (
-        <StickyNote
-          key={note.id} // React key to help React identify which items changed
-          text={note.text} // Text content of this note
-          position={note.position} // Position to place the note on screen
-
-          // Handler to update text when the note content changes
-          onChange={(newText) =>
-            setNotes((notes) =>
-              notes.map((n) => (n.id === note.id ? { ...n, text: newText } : n))
-            )
-          }
-
-          // Handler to update position when the note is dragged
-          onDrag={(position) =>
-            setNotes((notes) =>
-              notes.map((n) => (n.id === note.id ? { ...n, position } : n))
-            )
-          }
-
-          // Handler to delete this note from state
-          onDelete={() =>
-            setNotes((notes) => notes.filter((n) => n.id !== note.id))
-          }
-        />
-      ))}
+  <StickyNote
+    key={note.id}
+    text={note.text}
+    position={note.position}
+    color={note.color}
+    onChange={(newText) =>
+      setNotes((notes) =>
+        notes.map((n) => (n.id === note.id ? { ...n, text: newText } : n))
+      )
+    }
+    onDrag={(position) =>
+      setNotes((notes) =>
+        notes.map((n) => (n.id === note.id ? { ...n, position } : n))
+      )
+    }
+    onDelete={() =>
+      setNotes((notes) => notes.filter((n) => n.id !== note.id))
+    }
+    onToggleColor={() => {
+      const colors = ['yellow', 'red', 'blue', 'green'];
+      setNotes((notes) =>
+        notes.map((n) =>
+          n.id === note.id
+            ? {
+                ...n,
+                color:
+                  colors[(colors.indexOf(n.color) + 1) % colors.length],
+              }
+            : n
+        )
+      );
+    }}
+  />
+))}
     </div>
   );
 }

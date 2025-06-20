@@ -3,12 +3,22 @@ import React, { useEffect, useState } from 'react';
 type StickyNoteProps = {
   text: string;
   position: { x: number; y: number };
-  onChange: (newText: string) => void;
-  onDelete: () => void;
+  color: string;
+  onChange: (text: string) => void;
   onDrag: (position: { x: number; y: number }) => void;
+  onDelete: () => void;
+  onToggleColor: () => void;
 };
 
-const StickyNote: React.FC<StickyNoteProps> = ({ text, position, onChange, onDelete, onDrag }) => {
+const StickyNote: React.FC<StickyNoteProps> = ({
+  text,
+  position,
+  color,
+  onChange,
+  onDelete,
+  onDrag,
+  onToggleColor,
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [offset, setOffset] = useState({ x: 0, y: 0 });
 
@@ -47,11 +57,20 @@ const StickyNote: React.FC<StickyNoteProps> = ({ text, position, onChange, onDel
 
   return (
     <div
-      className="bg-yellow-200 rounded p-4 shadow-md w-64 min-h-32 absolute"
-      style={{ left: position.x, top: position.y }}
+      style={{
+        position: 'absolute',
+        left: position.x,
+        top: position.y,
+        backgroundColor: color,
+        minWidth: 200,
+        minHeight: 150,
+        borderRadius: 8,
+        boxShadow: '0 2px 8px rgba(0,0,0,0.15)',
+        padding: 16,
+      }}
     >
       <div
-        className="cursor-move bg-yellow-300 px-2 py-1 rounded-t"
+        className="cursor-move bg-gray-300 px-2 py-1 rounded-t"
         onMouseDown={handleMouseDown}
       >
         Drag Me
@@ -63,13 +82,23 @@ const StickyNote: React.FC<StickyNoteProps> = ({ text, position, onChange, onDel
         onChange={e => onChange(e.target.value)}
       ></textarea>
 
-      <button
-        className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-        onClick={onDelete}
-        aria-label="Delete Note"
-      >
-        x
-      </button>
+      <div className="flex justify-between mt-2">
+        <button
+          className="text-white-600 hover:text-black-800"
+          onClick={onToggleColor}
+          type="button"
+        >
+          Toggle Color
+        </button>
+        <button
+          className="text-red-500 hover:text-red-700"
+          onClick={onDelete}
+          aria-label="Delete Note"
+          type="button"
+        >
+          x
+        </button>
+      </div>
     </div>
   );
 };
