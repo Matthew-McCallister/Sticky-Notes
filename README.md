@@ -36,16 +36,16 @@ npm install
 ##Roadmap
  Setup Environment (Done)
 
- Create sticky note components
+ Create sticky note components (done)
 
- Allow typing in notes
+ Allow typing in notes (done)
 
- Drag-and-drop positioning
+ Drag-and-drop positioning (done)
 
- Save notes to localStorage
+ Save notes to localStorage 
 
- Delete notes
+ Delete notes (done)
 
- Add Playwright tests
+ Add Playwright tests (done)
 
  Optional: Back-end storage in Supabase or Express
