@@ -98,3 +98,35 @@ test('StickyNote can be dragged to a new position', async ({ page }) => {
     expect(afterReload.x).toBeCloseTo(moved.x, 2);
     expect(afterReload.y).toBeCloseTo(moved.y, 2);
   });
+
+  // Test case to ensure clicking "Add Note" creates a new sticky note
+  test('Clicking "Add Note" creates a new sticky note', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+  
+    // Select the button by its visible text
+    const addButton = page.getByRole('button', { name: 'Add Note' });
+    await expect(addButton).toBeVisible();
+  
+    await addButton.click();
+  
+    const textareas = page.locator('textarea');
+    await expect(textareas).toHaveCount(2);
+  });
+  
+  test('Each new note is independent and editable', async ({ page }) => {
+    await page.goto('http://localhost:5173/');
+  
+    const addButton = page.getByRole('button', { name: 'Add Note' });
+    await addButton.click();
+  
+    const textareas = page.locator('textarea');
+    await expect(textareas).toHaveCount(2);
+  
+    await textareas.nth(0).fill('First note');
+    await expect(textareas.nth(0)).toHaveValue('First note');
+  
+    await textareas.nth(1).fill('Second note');
+    await expect(textareas.nth(1)).toHaveValue('Second note');
+  
+    await expect(textareas.nth(0)).toHaveValue('First note');
+  });
